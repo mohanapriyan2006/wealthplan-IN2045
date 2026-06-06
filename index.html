@@ -610,6 +610,164 @@
             gap: 10px;
         }
 
+        /* Calculator Tab System */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .calculator-card {
+            background: linear-gradient(160deg, rgba(106, 13, 173, 0.08), var(--bg-surface));
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            will-change: transform;
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary-light);
+            box-shadow: 0 16px 30px rgba(106, 13, 173, 0.2);
+        }
+
+        .calculator-card h3 {
+            font-family: var(--font-heading);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+        }
+
+        .calculator-card h3 i { color: var(--primary-light); }
+
+        .calculator-form {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .calculator-input-group {
+            display: grid;
+            gap: 6px;
+        }
+
+        .calculator-input-group label {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .calculator-input-group input,
+        .calculator-input-group select {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface-elevated);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            font-family: var(--font-main);
+            outline: none;
+            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .calculator-input-group input:focus,
+        .calculator-input-group select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.2), 0 0 14px var(--primary-glow);
+        }
+
+        .calculator-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .calc-btn {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .calc-btn:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 8px 18px rgba(106, 13, 173, 0.28);
+        }
+
+        .calc-btn.secondary {
+            background: transparent;
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .result-panel {
+            background-color: rgba(106, 13, 173, 0.08);
+            border: 1px solid rgba(157, 78, 221, 0.25);
+            border-radius: 10px;
+            padding: 12px;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        .result-panel.show {
+            animation: fadeInResult 0.45s ease forwards;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            padding: 5px 0;
+        }
+
+        .result-row span:first-child { color: var(--text-secondary); }
+        .result-row span:last-child { font-weight: 700; color: var(--text-primary); }
+
+        .calculator-chart-wrap {
+            margin-top: 12px;
+            height: 180px;
+        }
+
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-wave {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: rippleEffect 0.55s linear;
+            background: rgba(255, 255, 255, 0.35);
+            pointer-events: none;
+        }
+
+        @keyframes fadeInResult {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .calculator-grid { grid-template-columns: 1fr; }
+            .calculator-card { padding: 16px; }
+        }
+
         /* Scroll Animation Triggers via Intersection Observer */
         .reveal-element {
             opacity: 0;
@@ -656,6 +814,7 @@
                 <li><a class="sidebar-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-layer-group"></i> Executive Core</a></li>
                 <li><a class="sidebar-link" onclick="switchTab('screener')"><i class="fa-solid fa-magnifying-glass-chart"></i> Equity Screener</a></li>
                 <li><a class="sidebar-link" onclick="switchTab('compare')"><i class="fa-solid fa-code-compare"></i> Matrix Compare</a></li>
+                <li><a class="sidebar-link" onclick="switchTab('calculator')"><i class="fa-solid fa-calculator"></i> Calculator</a></li>
             </ul>
         </aside>
 
@@ -790,6 +949,151 @@
                 </section>
             </div>
 
+            <div id="tab-calculator" class="tab-pane" style="display: none;">
+                <section class="calculator-grid">
+                    <article class="calculator-card reveal-element">
+                        <h3><i class="fa-solid fa-chart-line"></i> SIP Calculator</h3>
+                        <form class="calculator-form" id="sipForm">
+                            <div class="calculator-input-group">
+                                <label for="sipMonthly">Monthly investment (₹)</label>
+                                <input id="sipMonthly" type="number" min="0" value="10000" aria-label="SIP monthly investment">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="sipReturn">Expected return (% p.a.)</label>
+                                <input id="sipReturn" type="number" min="0" step="0.1" value="12" aria-label="SIP expected return">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="sipYears">Duration (years)</label>
+                                <input id="sipYears" type="number" min="1" value="15" aria-label="SIP duration">
+                            </div>
+                        </form>
+                        <div class="calculator-actions">
+                            <button class="calc-btn btn-ripple calculator-reset" type="button" data-form="sipForm" data-calc="sip">Reset</button>
+                        </div>
+                        <div class="result-panel" id="sipResult" role="status" aria-live="polite">
+                            <div class="result-row"><span>Maturity amount</span><span id="sipMaturity"></span></div>
+                            <div class="result-row"><span>Total invested</span><span id="sipInvested"></span></div>
+                            <div class="result-row"><span>Total gain</span><span id="sipGain"></span></div>
+                        </div>
+                        <div class="calculator-chart-wrap"><canvas id="sipChart"></canvas></div>
+                    </article>
+
+                    <article class="calculator-card reveal-element">
+                        <h3><i class="fa-solid fa-wallet"></i> SWP Calculator</h3>
+                        <form class="calculator-form" id="swpForm">
+                            <div class="calculator-input-group">
+                                <label for="swpInitial">Initial investment (₹)</label>
+                                <input id="swpInitial" type="number" min="0" value="2000000" aria-label="SWP initial investment">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="swpWithdrawal">Withdrawal amount (₹)</label>
+                                <input id="swpWithdrawal" type="number" min="0" value="25000" aria-label="SWP withdrawal amount">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="swpFrequency">Withdrawal frequency</label>
+                                <select id="swpFrequency" aria-label="SWP withdrawal frequency">
+                                    <option value="1">Monthly</option>
+                                    <option value="12">Yearly</option>
+                                </select>
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="swpReturn">Expected return (% p.a.)</label>
+                                <input id="swpReturn" type="number" min="0" step="0.1" value="10" aria-label="SWP expected return">
+                            </div>
+                        </form>
+                        <div class="calculator-actions">
+                            <button class="calc-btn btn-ripple calculator-reset" type="button" data-form="swpForm" data-calc="swp">Reset</button>
+                        </div>
+                        <div class="result-panel" id="swpResult" role="status" aria-live="polite">
+                            <div class="result-row"><span>Duration until depletion</span><span id="swpDuration"></span></div>
+                            <div class="result-row"><span>Ending balance</span><span id="swpEnding"></span></div>
+                        </div>
+                        <div class="calculator-chart-wrap"><canvas id="swpChart"></canvas></div>
+                    </article>
+
+                    <article class="calculator-card reveal-element">
+                        <h3><i class="fa-solid fa-sack-dollar"></i> Lump Sum Calculator</h3>
+                        <form class="calculator-form" id="lumpForm">
+                            <div class="calculator-input-group">
+                                <label for="lumpInvestment">One-time investment (₹)</label>
+                                <input id="lumpInvestment" type="number" min="0" value="500000" aria-label="Lump sum investment">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="lumpReturn">Expected return (% p.a.)</label>
+                                <input id="lumpReturn" type="number" min="0" step="0.1" value="12" aria-label="Lump sum return">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="lumpYears">Duration (years)</label>
+                                <input id="lumpYears" type="number" min="1" value="12" aria-label="Lump sum duration">
+                            </div>
+                        </form>
+                        <div class="calculator-actions">
+                            <button class="calc-btn btn-ripple calculator-reset" type="button" data-form="lumpForm" data-calc="lump">Reset</button>
+                        </div>
+                        <div class="result-panel" id="lumpResult" role="status" aria-live="polite">
+                            <div class="result-row"><span>Maturity amount</span><span id="lumpMaturity"></span></div>
+                        </div>
+                        <div class="calculator-chart-wrap"><canvas id="lumpChart"></canvas></div>
+                    </article>
+
+                    <article class="calculator-card reveal-element">
+                        <h3><i class="fa-solid fa-user-clock"></i> Retirement Calculator</h3>
+                        <form class="calculator-form" id="retForm">
+                            <div class="calculator-input-group">
+                                <label for="retCurrentAge">Current age</label>
+                                <input id="retCurrentAge" type="number" min="18" value="30" aria-label="Current age">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="retRetireAge">Retirement age</label>
+                                <input id="retRetireAge" type="number" min="19" value="60" aria-label="Retirement age">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="retMonthly">Monthly savings (₹)</label>
+                                <input id="retMonthly" type="number" min="0" value="25000" aria-label="Retirement monthly savings">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="retReturn">Expected return (% p.a.)</label>
+                                <input id="retReturn" type="number" min="0" step="0.1" value="11" aria-label="Retirement return">
+                            </div>
+                        </form>
+                        <div class="calculator-actions">
+                            <button class="calc-btn btn-ripple calculator-reset" type="button" data-form="retForm" data-calc="ret">Reset</button>
+                        </div>
+                        <div class="result-panel" id="retResult" role="status" aria-live="polite">
+                            <div class="result-row"><span>Corpus at retirement</span><span id="retCorpus"></span></div>
+                            <div class="result-row"><span>Total invested</span><span id="retInvested"></span></div>
+                        </div>
+                        <div class="calculator-chart-wrap"><canvas id="retChart"></canvas></div>
+                    </article>
+
+                    <article class="calculator-card reveal-element">
+                        <h3><i class="fa-solid fa-bullseye"></i> Goal Planning Calculator</h3>
+                        <form class="calculator-form" id="goalForm">
+                            <div class="calculator-input-group">
+                                <label for="goalTarget">Target amount (₹)</label>
+                                <input id="goalTarget" type="number" min="0" value="10000000" aria-label="Goal target amount">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="goalYears">Duration (years)</label>
+                                <input id="goalYears" type="number" min="1" value="15" aria-label="Goal duration">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="goalReturn">Expected return (% p.a.)</label>
+                                <input id="goalReturn" type="number" min="0" step="0.1" value="12" aria-label="Goal expected return">
+                            </div>
+                        </form>
+                        <div class="calculator-actions">
+                            <button class="calc-btn btn-ripple calculator-reset" type="button" data-form="goalForm" data-calc="goal">Reset</button>
+                        </div>
+                        <div class="result-panel" id="goalResult" role="status" aria-live="polite">
+                            <div class="result-row"><span>Required monthly investment</span><span id="goalMonthly"></span></div>
+                            <div class="result-row"><span>Total invested</span><span id="goalInvested"></span></div>
+                        </div>
+                        <div class="calculator-chart-wrap"><canvas id="goalChart"></canvas></div>
+                    </article>
+                </section>
+            </div>
+
             <div class="shimmer-line"></div>
 
             <section class="avoid-banner reveal-element">
@@ -849,6 +1153,7 @@
         let performanceChartInstance = null;
         let allocationChartInstance = null;
         let sectorChartInstance = null;
+        const calculatorCharts = {};
 
         // Life Cycle Init
         window.addEventListener('DOMContentLoaded', () => {
@@ -861,6 +1166,8 @@
             renderScreenerTable(equityDatabase);
             populateComparisonSelectors();
             initCharts();
+            initCalculators();
+            setupRippleButtons();
             // Animate needle on start
             setTimeout(() => { document.getElementById('riskNeedle').style.transform = 'translateX(-50%) rotate(35deg)'; }, 800);
         }
@@ -1120,6 +1427,224 @@
                     <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:12px; line-height:1.4;">${stock.moat.substring(0, 140)}...</p>
                 </div>
             `;
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Math.max(value || 0, 0));
+        }
+
+        function animateResult(panelId) {
+            const panel = document.getElementById(panelId);
+            panel.classList.remove('show');
+            void panel.offsetWidth;
+            panel.classList.add('show');
+        }
+
+        function updateOrCreateChart(key, canvasId, config) {
+            if (calculatorCharts[key]) calculatorCharts[key].destroy();
+            calculatorCharts[key] = new Chart(document.getElementById(canvasId).getContext('2d'), config);
+        }
+
+        function initCalculators() {
+            const triggerMap = {
+                sip: calculateSIP,
+                swp: calculateSWP,
+                lump: calculateLumpSum,
+                ret: calculateRetirement,
+                goal: calculateGoalPlanning
+            };
+
+            Object.entries(triggerMap).forEach(([name, fn]) => {
+                const form = document.getElementById(`${name}Form`);
+                form.querySelectorAll('input, select').forEach(input => input.addEventListener('input', fn));
+                fn();
+            });
+
+            document.querySelectorAll('.calculator-reset').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const formId = btn.dataset.form;
+                    document.getElementById(formId).reset();
+                    triggerMap[btn.dataset.calc]();
+                });
+            });
+        }
+
+        function calculateSIP() {
+            const monthly = parseFloat(document.getElementById('sipMonthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('sipReturn').value) || 0;
+            const years = Math.max(parseInt(document.getElementById('sipYears').value) || 1, 1);
+            const monthlyRate = annualRate / 12 / 100;
+            const months = years * 12;
+
+            const maturity = monthlyRate === 0
+                ? monthly * months
+                : monthly * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+            const invested = monthly * months;
+            const gain = maturity - invested;
+
+            document.getElementById('sipMaturity').textContent = formatCurrency(maturity);
+            document.getElementById('sipInvested').textContent = formatCurrency(invested);
+            document.getElementById('sipGain').textContent = formatCurrency(gain);
+            animateResult('sipResult');
+
+            const labels = [];
+            const values = [];
+            let corpus = 0;
+            for (let m = 1; m <= months; m++) {
+                corpus = (corpus + monthly) * (1 + monthlyRate);
+                if (m % 12 === 0) {
+                    labels.push(`Y${m / 12}`);
+                    values.push(Math.round(corpus));
+                }
+            }
+
+            updateOrCreateChart('sip', 'sipChart', {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'SIP growth', data: values, borderColor: '#9d4edd', backgroundColor: 'rgba(106, 13, 173, 0.15)', fill: true, tension: 0.3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9CA3AF' } } }, scales: { x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
+        }
+
+        function calculateSWP() {
+            const initial = parseFloat(document.getElementById('swpInitial').value) || 0;
+            const withdrawal = parseFloat(document.getElementById('swpWithdrawal').value) || 0;
+            const frequency = parseInt(document.getElementById('swpFrequency').value) || 1;
+            const annualRate = parseFloat(document.getElementById('swpReturn').value) || 0;
+            const monthlyRate = annualRate / 12 / 100;
+
+            let balance = initial;
+            const labels = ['Y0'];
+            const values = [Math.round(balance)];
+            const maxMonths = 1200;
+            let months = 0;
+
+            while (balance > 0 && months < maxMonths) {
+                months += 1;
+                balance *= (1 + monthlyRate);
+                if (months % frequency === 0) balance -= withdrawal;
+                if (months % 12 === 0) {
+                    labels.push(`Y${months / 12}`);
+                    values.push(Math.max(0, Math.round(balance)));
+                }
+            }
+
+            const durationLabel = months >= maxMonths ? '100+ years' : `${(months / 12).toFixed(1)} years`;
+            document.getElementById('swpDuration').textContent = durationLabel;
+            document.getElementById('swpEnding').textContent = formatCurrency(balance);
+            animateResult('swpResult');
+
+            updateOrCreateChart('swp', 'swpChart', {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Balance trajectory', data: values, borderColor: '#6A0DAD', backgroundColor: 'rgba(157, 78, 221, 0.15)', fill: true, tension: 0.25 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9CA3AF' } } }, scales: { x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
+        }
+
+        function calculateLumpSum() {
+            const principal = parseFloat(document.getElementById('lumpInvestment').value) || 0;
+            const annualRate = parseFloat(document.getElementById('lumpReturn').value) || 0;
+            const years = Math.max(parseInt(document.getElementById('lumpYears').value) || 1, 1);
+            const rate = annualRate / 100;
+            const maturity = principal * Math.pow(1 + rate, years);
+
+            document.getElementById('lumpMaturity').textContent = formatCurrency(maturity);
+            animateResult('lumpResult');
+
+            const labels = Array.from({ length: years + 1 }, (_, i) => `Y${i}`);
+            const values = labels.map((_, i) => Math.round(principal * Math.pow(1 + rate, i)));
+
+            updateOrCreateChart('lump', 'lumpChart', {
+                type: 'bar',
+                data: { labels, datasets: [{ label: 'Lump sum growth', data: values, backgroundColor: 'rgba(106, 13, 173, 0.7)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9CA3AF' } } }, scales: { x: { ticks: { color: '#9CA3AF' }, grid: { display: false } }, y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
+        }
+
+        function calculateRetirement() {
+            const currentAge = parseInt(document.getElementById('retCurrentAge').value) || 0;
+            const retireAge = parseInt(document.getElementById('retRetireAge').value) || 0;
+            const monthly = parseFloat(document.getElementById('retMonthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('retReturn').value) || 0;
+
+            const years = Math.max(retireAge - currentAge, 1);
+            const months = years * 12;
+            const monthlyRate = annualRate / 12 / 100;
+            const corpus = monthlyRate === 0
+                ? monthly * months
+                : monthly * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+            const invested = monthly * months;
+
+            document.getElementById('retCorpus').textContent = formatCurrency(corpus);
+            document.getElementById('retInvested').textContent = formatCurrency(invested);
+            animateResult('retResult');
+
+            const labels = [];
+            const values = [];
+            let balance = 0;
+            for (let m = 1; m <= months; m++) {
+                balance = (balance + monthly) * (1 + monthlyRate);
+                if (m % 12 === 0) {
+                    labels.push(`Age ${currentAge + m / 12}`);
+                    values.push(Math.round(balance));
+                }
+            }
+
+            updateOrCreateChart('ret', 'retChart', {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Retirement corpus growth', data: values, borderColor: '#b67cff', backgroundColor: 'rgba(182, 124, 255, 0.15)', fill: true, tension: 0.3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9CA3AF' } } }, scales: { x: { ticks: { color: '#9CA3AF' }, grid: { display: false } }, y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
+        }
+
+        function calculateGoalPlanning() {
+            const target = parseFloat(document.getElementById('goalTarget').value) || 0;
+            const years = Math.max(parseInt(document.getElementById('goalYears').value) || 1, 1);
+            const annualRate = parseFloat(document.getElementById('goalReturn').value) || 0;
+            const monthlyRate = annualRate / 12 / 100;
+            const months = years * 12;
+
+            const requiredMonthly = monthlyRate === 0
+                ? target / months
+                : target / (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+            const invested = requiredMonthly * months;
+
+            document.getElementById('goalMonthly').textContent = formatCurrency(requiredMonthly);
+            document.getElementById('goalInvested').textContent = formatCurrency(invested);
+            animateResult('goalResult');
+
+            const labels = [];
+            const values = [];
+            let corpus = 0;
+            for (let m = 1; m <= months; m++) {
+                corpus = (corpus + requiredMonthly) * (1 + monthlyRate);
+                if (m % 12 === 0) {
+                    labels.push(`Y${m / 12}`);
+                    values.push(Math.round(corpus));
+                }
+            }
+
+            updateOrCreateChart('goal', 'goalChart', {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Goal build-up', data: values, borderColor: '#6A0DAD', backgroundColor: 'rgba(106, 13, 173, 0.18)', fill: true, tension: 0.3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9CA3AF' } } }, scales: { x: { ticks: { color: '#9CA3AF' }, grid: { display: false } }, y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
+        }
+
+        function setupRippleButtons() {
+            document.querySelectorAll('.btn-ripple').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const wave = document.createElement('span');
+                    wave.className = 'ripple-wave';
+                    const diameter = Math.max(button.clientWidth, button.clientHeight);
+                    wave.style.width = wave.style.height = `${diameter}px`;
+                    const rect = button.getBoundingClientRect();
+                    wave.style.left = `${event.clientX - rect.left - diameter / 2}px`;
+                    wave.style.top = `${event.clientY - rect.top - diameter / 2}px`;
+                    const existing = button.querySelector('.ripple-wave');
+                    if (existing) existing.remove();
+                    button.appendChild(wave);
+                });
+            });
         }
 
         // Appearance Mode Transformations
