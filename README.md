@@ -10,7 +10,7 @@
 ---
 
 ## ✨ Overview
-WealthPlan IN2045 is a **professional SaaS-style investment dashboard** designed with a **purple gradient UI** and **smooth animations**. It helps investors track portfolios, analyze performance, and gain actionable insights with elegance.
+[WealthPlan IN2045](https://mohanapriyan2006.github.io/wealthplan-IN2045/) is a **professional SaaS-style investment dashboard** designed with a **purple gradient UI** and **smooth animations**. It helps investors track portfolios, analyze performance, and gain actionable insights with elegance.
 
 ---
 
@@ -67,4 +67,5 @@ This project is licensed under the **MIT License**.
 
 ## 💡 Footer
 *“💜 Empowering smarter investments with elegance and intelligence 💜”*
-```
+
+----
